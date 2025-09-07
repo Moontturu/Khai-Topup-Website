@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembayaran - Khai TopUp</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #001533;
+      color: #fff;
+      text-align: center;
+    }
+    header {
+      padding: 20px;
+      color: #00aaff;
+      text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff;
+    }
+    .container {
+      padding: 20px;
+    }
+    .qr-box {
+      background: rgba(0,0,50,0.7);
+      border-radius: 12px;
+      padding: 20px;
+      display: inline-block;
+      margin-top: 20px;
+      box-shadow: 0 0 20px #00f7ff;
+    }
+    .qr-box img {
+      width: 200px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00f7ff;
+    }
+    .btn {
+      display: block;
+      width: 90%;
+      max-width: 300px;
+      margin: 15px auto;
+      padding: 12px;
+      background: #00aaff;
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #00cfff;
+      box-shadow: 0 0 20px #00f7ff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pembayaran Khai TopUp</h1>
+  </header>
+
+  <div class="container">
+    <h2 id="judulBayar"></h2>
+
+    <div class="qr-box" id="qrisBox" style="display:none;">
+      <p>Scan QRIS Berikut:</p>
+      <img src="qris.Qris.png" alt="QRIS Pembayaran">
+    </div>
+
+    <div class="qr-box" id="danaBox" style="display:none;">
+      <p>Transfer ke Nomor Dana:</p>
+      <h2>085703943720</h2>
+    </div>
+
+    <a href="index.html"class="btn">⬅️ Kembali ke Menu Awal</a>
+    <button class="btn">🔎 Cek Status Pesanan</button>
+    <button class="btn" style="background:#ff4444;color:#fff;">❌ Cancel</button>
+  </div>
+
+  <script>
+    // Ambil data dari localStorage
+    const payment = localStorage.getItem('payment');
+    const harga = localStorage.getItem('harga');
+    const playerId = localStorage.getItem('playerId');
+
+    // Judul pembayaran
+    document.getElementById('judulBayar').innerText =
+      `USER: ${playerId} | Total: Rp ${harga}`;
+
+    // Tampilkan sesuai metode pembayaran
+    if (payment === "qris") {
+      document.getElementById("qrisBox").style.display = "block";
+    } else if (payment === "dana") {
+      document.getElementById("danaBox").style.display = "block";
+    }
+  </script>
+</body>
+</html>

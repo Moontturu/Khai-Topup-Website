@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khai Martket - Roblox Top Up</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #001533;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Animasi bintang */
+    .stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #00f7ff;
+      border-radius: 50%;
+      animation: moveStars 15s linear infinite;
+    }
+
+    @keyframes moveStars {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(100vh); opacity: 0; }
+    }
+
+    header {
+      padding: 20px;
+      color: #00aaff;
+      text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff;
+      animation: glowText 2s infinite alternate;
+      text-align: center;
+    }
+
+    @keyframes glowText {
+      from { text-shadow: 0 0 8px #00aaff; }
+      to { text-shadow: 0 0 20px #00f7ff, 0 0 40px #00f7ff; }
+    }
+
+    .form-box {
+      background: rgba(0, 20, 40, 0.9);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 20px #00f7ff;
+      text-align: center;
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #001f3f;
+      color: #fff;
+      font-size: 16px;
+      box-shadow: 0 0 10px #00f7ff inset;
+    }
+
+    .robux-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .robux-buttons button {
+      padding: 12px;
+      background: #0077ff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #00f7ff;
+      color: #fff;
+    }
+
+    .robux-buttons button:hover {
+      background: #0099ff;
+      box-shadow: 0 0 20px #00f7ff;
+    }
+
+    .btn {
+      display: block;
+      width: 90%;
+      margin: 15px auto;
+      padding: 12px;
+      background: #00aaff;
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #00cfff;
+      box-shadow: 0 0 20px #00f7ff;
+    }
+
+    /* Loading Overlay */
+    .loading {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #00f7ff;
+    }
+
+    .spinner {
+      border: 8px solid #222;
+      border-top: 8px solid #00f7ff;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animasi Bintang -->
+  <div class="stars" id="stars"></div>
+
+  <header>
+    <h1>Khai TopUp</h1>
+    <p>Top Up Roblox Termurah & Terpercaya</p>
+  </header>
+
+  <div class="form-box">
+    <h2>Top Up Robux</h2>
+    <input type="text" id="playerId" placeholder="Masukkan USER Roblox">
+
+    <h3>Pilih Nominal</h3>
+    <div class="robux-buttons">
+      <button data-harga="7500">80 Robux = Rp 7.500</button>
+      <button data-harga="40000">400 Robux = Rp 40.000</button>
+      <button data-harga="100000">1000 Robux = Rp 100.000</button>
+      <button data-harga="225000">2250 Robux = Rp 225.000</button>
+      <button data-harga="500000">5000 Robux = Rp 500.000</button>
+      <button data-harga="1000000">10.000 Robux = Rp 1.000.000</button>
+    </div>
+
+    <h3>Metode Pembayaran</h3>
+    <div class="robux-buttons">
+      <button data-pay="qris">QRIS</button>
+      <button data-pay="dana">Dana</button>
+    </div>
+
+    <button class="btn" onclick="lanjutPembayaran()">Lanjut ke Pembayaran</button>
+  </div>
+
+  <!-- Loading Screen -->
+  <div class="loading" id="loadingScreen">
+    <div class="spinner"></div>
+    <p>Memproses pesanan Anda...</p>
+  </div>
+
+  <script>
+    let selectedHarga = null;
+    let selectedPayment = null;
+
+    // Animasi Bintang Random
+    const starsContainer = document.getElementById("stars");
+    for (let i = 0; i < 50; i++) {
+      let star = document.createElement("div");
+      star.className = "star";
+      star.style.left = Math.random() * 100 + "vw";
+      star.style.top = Math.random() * 100 + "vh";
+      star.style.animationDuration = (10 + Math.random() * 10) + "s";
+      starsContainer.appendChild(star);
+    }
+
+    document.querySelectorAll('.robux-buttons button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.harga) {
+          selectedHarga = btn.dataset.harga;
+        }
+        if (btn.dataset.pay) {
+          selectedPayment = btn.dataset.pay;
+        }
+      });
+    });
+
+    function lanjutPembayaran() {
+      const playerId = document.getElementById('playerId').value;
+      if (!playerId || !selectedHarga || !selectedPayment) {
+        alert("Harap isi USER Roblox, pilih nominal Robux, dan metode pembayaran!");
+        return;
+      }
+
+      // Tampilkan loading dulu
+      document.getElementById('loadingScreen').style.display = 'flex';
+
+      // Simpan data ke localStorage agar bisa dipakai di pembayaran.html
+      localStorage.setItem('playerId', playerId);
+      localStorage.setItem('harga', selectedHarga);
+      localStorage.setItem('payment', selectedPayment);
+
+      // Redirect setelah 2 detik
+      setTimeout(() => {
+        window.location.href = "pembayaran.html";
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>
